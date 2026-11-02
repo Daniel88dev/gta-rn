@@ -1,56 +1,53 @@
-# Welcome to your Expo app 👋
+# GTA 6 Guide: Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Mobile companion app for GTA 6 (iOS and Android): an interactive map plus a guide to quests and collectibles.
 
-## Get started
+**Stack:** [Expo](https://docs.expo.dev/) SDK 58 (React Native 0.88) + TypeScript, with Expo Router for navigation.
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting started
 
 ```bash
-npm run reset-project
+npm install
+npm start         # then press i / a, or scan the QR code with Expo Go
+npm run web       # run in the browser
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+| Script              | What it does                               |
+| ------------------- | ------------------------------------------ |
+| `npm run lint`      | ESLint (`eslint-config-expo` + Prettier)   |
+| `npm run format`    | Prettier (write)                           |
+| `npm run typecheck` | `tsc --noEmit`                             |
+| `npm test`          | Vitest for the domain and application code |
 
-### Other setup steps
+## Architecture
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Same bounded contexts and CQRS layer as the desktop app (`gta6-guide-desktop`).
 
-## Learn more
+```
+src/
+  app/                 Expo Router routes (screens only, kept thin)
+  bootstrap/           composition root (wires adapters to buses) + React provider
+  shared/
+    domain/            Result, branded ids
+    cqrs/              Command/Query types, CommandBus, QueryBus
+  modules/
+    map/               locations, coordinates, regions
+    quests/            quest catalog, quest progress aggregate
+    collectibles/      collectible sets and collection progress
+      domain/          entities, invariants, repository ports (no React, no I/O)
+      application/     *.command.ts / *.query.ts handlers
+      infrastructure/  adapters (in-memory now; AsyncStorage / SQLite / JSON assets later)
+      ui/              React Native components for this context
+  components/, hooks/, constants/   generic UI building blocks and theme
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Rules of thumb:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Screens dispatch **commands** (`commands.dispatch(...)`) to change state and ask **queries** (`queries.ask(...)`) for read models. They never touch repositories.
+- `domain/` imports nothing from React, React Native, Expo, or infrastructure.
+- Contexts reference each other by id only (a quest step holds a `locationId`, not a `MapLocation`).
+- `bootstrap/container.ts` is the only file that knows concrete adapters.
 
-## Join the community
+`shared/` and `modules/*/domain|application` are kept identical to the desktop app. If keeping them in sync by hand gets painful, the next step is extracting them into a shared package.
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+See `AGENTS.md` for notes aimed at AI coding agents working on this Expo project.
