@@ -13,10 +13,13 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="home" href="/" asChild>
-            <TabButton>Home</TabButton>
+            <TabButton>Map</TabButton>
           </TabTrigger>
-          <TabTrigger name="quests" href="/quests" asChild>
-            <TabButton>Quests</TabButton>
+          <TabTrigger name="guide" href="/guide" asChild>
+            <TabButton>Guide</TabButton>
+          </TabTrigger>
+          <TabTrigger name="credits" href="/credits" asChild>
+            <TabButton>Credits</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
@@ -41,7 +44,7 @@ export function CustomTabList(props: TabListProps) {
     <View {...props} style={styles.tabListContainer}>
       <ThemedView type="backgroundElement" style={styles.innerContainer}>
         <ThemedText type="smallBold" style={styles.brandText}>
-          GTA 6 Guide
+          Leonida Guide (unofficial)
         </ThemedText>
 
         {props.children}
