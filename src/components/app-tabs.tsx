@@ -21,8 +21,16 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="quests">
-        <NativeTabs.Trigger.Label>Quests</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="guide">
+        <NativeTabs.Trigger.Label>Guide</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          src={require('@/assets/images/tabIcons/explore.png')}
+          renderingMode="template"
+        />
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="credits">
+        <NativeTabs.Trigger.Label>Credits</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           src={require('@/assets/images/tabIcons/explore.png')}
           renderingMode="template"

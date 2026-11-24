@@ -7,5 +7,6 @@ export interface QuestCatalog {
 
 export interface QuestProgressStore {
   get(questId: QuestId): Promise<QuestProgress>;
+  getAll(): Promise<readonly QuestProgress[]>;
   save(progress: QuestProgress): Promise<void>;
 }

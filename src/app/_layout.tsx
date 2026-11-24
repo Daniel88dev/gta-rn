@@ -4,10 +4,11 @@ import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { createContainer } from '@/bootstrap/container';
+import { loadContent } from '@/bootstrap/load-content';
 import { ContainerProvider } from '@/bootstrap/container-context';
 import AppTabs from '@/components/app-tabs';
 
-const container = createContainer();
+const container = createContainer(loadContent());
 
 SplashScreen.preventAutoHideAsync();
 
